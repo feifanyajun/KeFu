@@ -5,7 +5,7 @@
 公司商城里面想加个在线客服，但是第三方的的太贵，功能太多又又不上。所以闲暇时间写了这个，让公司能暂时用起来。
 
 # 安装
-git clone https://github.com/gytai/KeFu.git
+git clone git@github.com:feifanyajun/KeFu.git
 
 cd KeFu
 
