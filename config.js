@@ -1,4 +1,4 @@
-var APP = {
+﻿var APP = {
     "KEFUUUID":'chat-kefu-admin',
     "QINIU":{
          "accessKey":"93lAJ0VMPD3-VBpXgCD6v77MUkld3moRGEW7BiwM",
