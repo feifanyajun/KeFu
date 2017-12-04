@@ -1,8 +1,8 @@
-const APP = {
+var APP = {
     "KEFUUUID":'chat-kefu-admin',
     "QINIU":{
-         "accessKey":"your access key",
-         "secretKey":"your secret key"
+         "accessKey":"93lAJ0VMPD3-VBpXgCD6v77MUkld3moRGEW7BiwM",
+         "secretKey":"b8acVtUqjI7rq7wDe3770bg7ue6bM8IM5SUbQcg4"
     }
 };
 
