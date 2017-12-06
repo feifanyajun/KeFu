@@ -1,8 +1,8 @@
 //一般直接写在一个js文件中
 layui.use(['layer', 'form', 'jquery'], function () {
-    var layer = layui.layer
-        , form = layui.form
-        , $ = layui.jquery;
+    var layer = layui.layer,
+         form = layui.form,
+         $ = layui.jquery;
 
     var currentUUID = '';
     var uuid = '';
@@ -14,7 +14,7 @@ layui.use(['layer', 'form', 'jquery'], function () {
     var online_num = 0;
 
     //页面初始化函数
-    function init() {
+    function init() {        
         $(".admin-index").addClass("layui-this");
 
         var height = document.body.clientHeight - 292;
@@ -175,7 +175,7 @@ layui.use(['layer', 'form', 'jquery'], function () {
             if(data.code == 200){
                 $('.chat-user').html('');
 
-                var data = data.data;
+                data = data.data;
 
                 data.forEach(function (user) {
                     insert_user_html(user.uid,user.name + '#'+ (uuids.length + 1));

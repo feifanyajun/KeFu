@@ -1,25 +1,29 @@
 /*
-* fingerprintJS 0.5.5 - Fast browser fingerprint library
-* https://github.com/Valve/fingerprintjs
-* Copyright (c) 2013 Valentin Vasilyev (valentin.vasilyev@outlook.com)
-* Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-* ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-* THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * fingerprintJS 0.5.5 - Fast browser fingerprint library
+ * https://github.com/Valve/fingerprintjs
+ * Copyright (c) 2013 Valentin Vasilyev (valentin.vasilyev@outlook.com)
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 ;(function (name, context, definition) {
-  if (typeof module !== 'undefined' && module.exports) { module.exports = definition(); }
-  else if (typeof define === 'function' && define.amd) { define(definition); }
-  else { context[name] = definition(); }
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = definition();
+  } else if (typeof define === 'function' && define.amd) {
+    define(definition);
+  } else {
+    context[name] = definition();
+  }
 })('Fingerprint', this, function () {
   'use strict';
 
@@ -47,38 +51,38 @@
       }
     };
 
-    this.map = function(obj, iterator, context) {
+    this.map = function (obj, iterator, context) {
       var results = [];
       // Not using strict equality so that this acts as a
       // shortcut to checking for `null` and `undefined`.
       if (obj == null) return results;
       if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
-      this.each(obj, function(value, index, list) {
+      this.each(obj, function (value, index, list) {
         results[results.length] = iterator.call(context, value, index, list);
       });
       return results;
     };
 
-    if (typeof options == 'object'){
+    if (typeof options == 'object') {
       this.hasher = options.hasher;
       this.screen_resolution = options.screen_resolution;
       this.screen_orientation = options.screen_orientation;
       this.canvas = options.canvas;
       this.ie_activex = options.ie_activex;
-    } else if(typeof options == 'function'){
+    } else if (typeof options == 'function') {
       this.hasher = options;
     }
   };
 
   Fingerprint.prototype = {
-    get: function(){
+    get: function () {
       var keys = [];
       keys.push(navigator.userAgent);
       keys.push(navigator.language);
       keys.push(screen.colorDepth);
       if (this.screen_resolution) {
         var resolution = this.getScreenResolution();
-        if (typeof resolution !== 'undefined'){ // headless browsers, such as phantomjs
+        if (typeof resolution !== 'undefined') { // headless browsers, such as phantomjs
           keys.push(resolution.join('x'));
         }
       }
@@ -87,20 +91,20 @@
       keys.push(this.hasLocalStorage());
       keys.push(this.hasIndexDb());
       //body might not be defined at this point or removed programmatically
-      if(document.body){
-        keys.push(typeof(document.body.addBehavior));
+      if (document.body) {
+        keys.push(typeof (document.body.addBehavior));
       } else {
         keys.push(typeof undefined);
       }
-      keys.push(typeof(window.openDatabase));
+      keys.push(typeof (window.openDatabase));
       keys.push(navigator.cpuClass);
       keys.push(navigator.platform);
       keys.push(navigator.doNotTrack);
       keys.push(this.getPluginsString());
-      if(this.canvas && this.isCanvasSupported()){
+      if (this.canvas && this.isCanvasSupported()) {
         keys.push(this.getCanvasFingerprint());
       }
-      if(this.hasher){
+      if (this.hasher) {
         return this.hasher(keys.join('###'), 31);
       } else {
         return this.murmurhash3_32_gc(keys.join('###'), 31);
@@ -120,7 +124,7 @@
      * @return {number} 32-bit positive integer hash
      */
 
-    murmurhash3_32_gc: function(key, seed) {
+    murmurhash3_32_gc: function (key, seed) {
       var remainder, bytes, h1, h1b, c1, c2, k1, i;
 
       remainder = key.length & 3; // key.length % 4
@@ -131,11 +135,11 @@
       i = 0;
 
       while (i < bytes) {
-          k1 =
-            ((key.charCodeAt(i) & 0xff)) |
-            ((key.charCodeAt(++i) & 0xff) << 8) |
-            ((key.charCodeAt(++i) & 0xff) << 16) |
-            ((key.charCodeAt(++i) & 0xff) << 24);
+        k1 =
+          ((key.charCodeAt(i) & 0xff)) |
+          ((key.charCodeAt(++i) & 0xff) << 8) |
+          ((key.charCodeAt(++i) & 0xff) << 16) |
+          ((key.charCodeAt(++i) & 0xff) << 24);
         ++i;
 
         k1 = ((((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16))) & 0xffffffff;
@@ -143,7 +147,7 @@
         k1 = ((((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16))) & 0xffffffff;
 
         h1 ^= k1;
-            h1 = (h1 << 13) | (h1 >>> 19);
+        h1 = (h1 << 13) | (h1 >>> 19);
         h1b = ((((h1 & 0xffff) * 5) + ((((h1 >>> 16) * 5) & 0xffff) << 16))) & 0xffffffff;
         h1 = (((h1b & 0xffff) + 0x6b64) + ((((h1b >>> 16) + 0xe654) & 0xffff) << 16));
       }
@@ -151,14 +155,17 @@
       k1 = 0;
 
       switch (remainder) {
-        case 3: k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
-        case 2: k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
-        case 1: k1 ^= (key.charCodeAt(i) & 0xff);
+        case 3:
+          k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+        case 2:
+          k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+        case 1:
+          k1 ^= (key.charCodeAt(i) & 0xff);
 
-        k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
-        k1 = (k1 << 15) | (k1 >>> 17);
-        k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
-        h1 ^= k1;
+          k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
+          k1 = (k1 << 15) | (k1 >>> 17);
+          k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
+          h1 ^= k1;
       }
 
       h1 ^= key.length;
@@ -174,25 +181,25 @@
 
     // https://bugzilla.mozilla.org/show_bug.cgi?id=781447
     hasLocalStorage: function () {
-      try{
+      try {
         return !!window.localStorage;
-      } catch(e) {
+      } catch (e) {
         return true; // SecurityError when referencing it means it exists
       }
     },
 
     hasSessionStorage: function () {
-      try{
+      try {
         return !!window.sessionStorage;
-      } catch(e) {
+      } catch (e) {
         return true; // SecurityError when referencing it means it exists
       }
     },
 
     hasIndexDb: function () {
-      try{
+      try {
         return !!window.indexedDB;
-      } catch(e) {
+      } catch (e) {
         return true; // SecurityError when referencing it means it exists
       }
     },
@@ -203,16 +210,16 @@
     },
 
     isIE: function () {
-      if(navigator.appName === 'Microsoft Internet Explorer') {
+      if (navigator.appName === 'Microsoft Internet Explorer') {
         return true;
-      } else if(navigator.appName === 'Netscape' && /Trident/.test(navigator.userAgent)){// IE 11
+      } else if (navigator.appName === 'Netscape' && /Trident/.test(navigator.userAgent)) { // IE 11
         return true;
       }
       return false;
     },
 
     getPluginsString: function () {
-      if(this.isIE() && this.ie_activex){
+      if (this.isIE() && this.ie_activex) {
         return this.getIEPluginsString();
       } else {
         return this.getRegularPluginsString();
@@ -221,7 +228,7 @@
 
     getRegularPluginsString: function () {
       return this.map(navigator.plugins, function (p) {
-        var mimeTypes = this.map(p, function(mt){
+        var mimeTypes = this.map(p, function (mt) {
           return [mt.type, mt.suffixes].join('~');
         }).join(',');
         return [p.name, p.description, mimeTypes].join('::');
@@ -229,8 +236,8 @@
     },
 
     getIEPluginsString: function () {
-      if(window.ActiveXObject){
-        var names = ['ShockwaveFlash.ShockwaveFlash',//flash plugin
+      if (window.ActiveXObject) {
+        var names = ['ShockwaveFlash.ShockwaveFlash', //flash plugin
           'AcroPDF.PDF', // Adobe PDF reader 7+
           'PDF.PdfCtrl', // Adobe PDF reader 6 and earlier, brrr
           'QuickTime.QuickTime', // QuickTime
@@ -243,14 +250,15 @@
           'SWCtl.SWCtl', // ShockWave player
           'WMPlayer.OCX', // Windows media player
           'AgControl.AgControl', // Silverlight
-          'Skype.Detection'];
+          'Skype.Detection'
+        ];
 
         // starting to detect plugins in IE
-        return this.map(names, function(name){
-          try{
+        return this.map(names, function (name) {
+          try {
             new ActiveXObject(name);
             return name;
-          } catch(e){
+          } catch (e) {
             return null;
           }
         }).join(';');
@@ -261,12 +269,12 @@
 
     getScreenResolution: function () {
       var resolution;
-       if(this.screen_orientation){
-         resolution = (screen.height > screen.width) ? [screen.height, screen.width] : [screen.width, screen.height];
-       }else{
-         resolution = [screen.height, screen.width];
-       }
-       return resolution;
+      if (this.screen_orientation) {
+        resolution = (screen.height > screen.width) ? [screen.height, screen.width] : [screen.width, screen.height];
+      } else {
+        resolution = [screen.height, screen.width];
+      }
+      return resolution;
     },
 
     getCanvasFingerprint: function () {
@@ -278,7 +286,7 @@
       ctx.font = "14px 'Arial'";
       ctx.textBaseline = "alphabetic";
       ctx.fillStyle = "#f60";
-      ctx.fillRect(125,1,62,20);
+      ctx.fillRect(125, 1, 62, 20);
       ctx.fillStyle = "#069";
       ctx.fillText(txt, 2, 15);
       ctx.fillStyle = "rgba(102, 204, 0, 0.7)";

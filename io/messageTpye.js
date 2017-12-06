@@ -1,4 +1,4 @@
-const messageType= {
+var messageType= {
     'public':'public',
     'private':'private'
 };

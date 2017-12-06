@@ -12,36 +12,28 @@ var msgModel = require('../model/message');
 
 //服务端连接
 function ioServer(io) {
-
     var _self = this;
     ioSvc.setInstance(io);
-
     var __uuids = [];
-
     //初始化连接人数
     redis.set('online_count',0,null,function (err,ret) {
         if(err){
             console.error(err);
         }
     });
-
     Array.prototype.remove = function(val) {
         var index = this.indexOf(val);
         if (index > -1) {
             this.splice(index, 1);
         }
     };
-
     io.on('connection', function (socket) {
         console.log('SocketIO有新的连接!');
-
         _self.updateOnlieCount(true);
-
         //用户与Socket进行绑定
         socket.on('login', function (msg) {
             var uid = msg.uid;
             console.log(uid+'登录成功');
-
             //通知用户上线
             if(uid != AppConfig.KEFUUUID){
                 redis.get(AppConfig.KEFUUUID,function (err,sid) {
@@ -59,7 +51,6 @@ function ioServer(io) {
                             if(typeof val == 'string'){
                                 val = parseInt(val);
                             }
-
                             //var ip = socket.request.connection.remoteAddress;
                             //此处获取IP可能会有延迟，建议改成自己的IP库
                             Common.getIpLocation(msg.ip,function (err,location) {
@@ -71,7 +62,6 @@ function ioServer(io) {
                                     "name":location + ' 客户',
                                     "type":'online'
                                 };
-
                                 redis.get('user-uuids',function (err,uuids) {
                                     if(err){
                                         console.error(err);
@@ -81,7 +71,6 @@ function ioServer(io) {
                                     }else{
                                         uuids = [];
                                     }
-
                                     if(__uuids.indexOf(uid) == -1){
                                         __uuids.push(uid);
                                         var d_user = {"uid":uid,"name":location + ' 客户'};
@@ -94,27 +83,22 @@ function ioServer(io) {
                                         });
                                     }
                                 });
-
                                 io.to(sid).emit('update-users',info);
                             });
-
                         });
                     }
                 });
             }
-
             redis.set(uid,socket.id,null,function (err,ret) {
                 if(err){
                     console.error(err);
                 }
             });
-
             redis.set(socket.id,uid,null,function (err,ret) {
                 if(err){
                     console.error(err);
                 }
             });
-
         });
 
         //断开事件

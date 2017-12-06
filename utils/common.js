@@ -5,7 +5,7 @@ function getClientIp(req) {
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
-};
+}
 
 function getIpLocation(ip,callback) {
     http.get('http://ip.taobao.com/service/getIpInfo.php?ip='+ip,function(req,res){

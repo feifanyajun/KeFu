@@ -34,4 +34,4 @@ function arrayRemove(array,val) {
     if (index > -1) {
         array.splice(index, 1);
     }
-};
+}
